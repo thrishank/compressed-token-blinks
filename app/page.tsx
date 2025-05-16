@@ -28,7 +28,7 @@ export default function Home() {
       setError("");
     }
 
-    if (recipientAddress) {
+    if (recipientAddress && !mintAddress) {
       if (!isValidSolanaAddress(recipientAddress)) {
         setError("Invalid recipient address");
         return;
