@@ -1,6 +1,6 @@
 import { ACTIONS_CORS_HEADERS, BLOCKCHAIN_IDS } from "@solana/actions";
 
-const blockchain = BLOCKCHAIN_IDS.devnet;
+const blockchain = BLOCKCHAIN_IDS.mainnet;
 
 export const headers = {
   ...ACTIONS_CORS_HEADERS,
@@ -9,4 +9,4 @@ export const headers = {
 };
 
 export const RPC_ENDPOINT =
-  "https://devnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d";
+  "https://mainnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d";
