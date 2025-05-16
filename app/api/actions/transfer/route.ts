@@ -3,8 +3,6 @@ import {
   ActionParameter,
   ActionPostRequest,
   ActionPostResponse,
-  ACTIONS_CORS_HEADERS,
-  BLOCKCHAIN_IDS,
 } from "@solana/actions";
 
 import {
@@ -18,16 +16,8 @@ import {
   selectMinCompressedTokenAccountsForTransfer,
 } from "@lightprotocol/compressed-token";
 import { bn, createRpc, Rpc } from "@lightprotocol/stateless.js";
+import { headers, RPC_ENDPOINT } from "../common";
 
-const blockchain = BLOCKCHAIN_IDS.mainnet;
-
-const headers = {
-  ...ACTIONS_CORS_HEADERS,
-  "x-blockchain-ids": blockchain,
-  "x-action-version": "2.4",
-};
-
-// OPTIONS endpoint is required for CORS preflight requests
 export const OPTIONS = async () => {
   return new Response(null, { headers });
 };
@@ -114,9 +104,6 @@ export const POST = async (req: Request) => {
     const toPubkey = new PublicKey(recipient);
     const mint_address = new PublicKey(mint);
 
-    const RPC_ENDPOINT =
-      "https://mainnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d";
-
     const connection: Rpc = createRpc(RPC_ENDPOINT, RPC_ENDPOINT, RPC_ENDPOINT);
 
     const compressedTokenAccounts =
@@ -161,6 +148,7 @@ export const POST = async (req: Request) => {
       transaction: Buffer.from(versionedTransaction.serialize()).toString(
         "base64",
       ),
+      message: "Transaction successfully",
     };
 
     return Response.json(response, { status: 200, headers });

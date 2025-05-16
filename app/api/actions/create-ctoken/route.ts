@@ -2,8 +2,6 @@ import {
   ActionGetResponse,
   ActionPostRequest,
   ActionPostResponse,
-  ACTIONS_CORS_HEADERS,
-  BLOCKCHAIN_IDS,
 } from "@solana/actions";
 
 import {
@@ -17,14 +15,7 @@ import {
 
 import { CompressedTokenProgram } from "@lightprotocol/compressed-token";
 import { createCreateMetadataAccountV3Instruction } from "@metaplex-foundation/mpl-token-metadata";
-
-const blockchain = BLOCKCHAIN_IDS.mainnet;
-
-const headers = {
-  ...ACTIONS_CORS_HEADERS,
-  "x-blockchain-ids": blockchain,
-  "x-action-version": "2.4",
-};
+import { headers, RPC_ENDPOINT } from "../common";
 
 // OPTIONS endpoint is required for CORS preflight requests
 export const OPTIONS = async () => {
@@ -100,9 +91,7 @@ export const POST = async (req: Request) => {
     const payer = new PublicKey(account);
     const mint: Signer = Keypair.generate();
 
-    const connection = new Connection(
-      "https://devnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d",
-    );
+    const connection = new Connection(RPC_ENDPOINT);
 
     const data: any = body.data;
 
