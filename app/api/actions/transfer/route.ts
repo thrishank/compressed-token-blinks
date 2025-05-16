@@ -27,6 +27,10 @@ export const GET = async (req: Request) => {
   const mint = url.searchParams.get("mint");
   const recipient = url.searchParams.get("recipient");
 
+  let posthref = mint
+    ? `/api/actions/transfer?recipient=${recipient}&mint=${mint}`
+    : `/api/actions/transfer?recipient=${recipient}`;
+
   if (!recipient) {
     return new Response(JSON.stringify({ error: "Recipient is required" }), {
       status: 400,
@@ -65,7 +69,7 @@ export const GET = async (req: Request) => {
       actions: [
         {
           label: "Transfer the token",
-          href: `/api/actions/transfer?recipient=${recipient}&mint=${mint}`,
+          href: posthref,
           type: "transaction",
           parameters,
         },
@@ -81,13 +85,14 @@ export const GET = async (req: Request) => {
 
 export const POST = async (req: Request) => {
   const url = new URL(req.url);
-  const mint = url.searchParams.get("mint")!;
   const recipient = url.searchParams.get("recipient")!;
+  let mint = url.searchParams.get("mint");
 
   try {
     const body: ActionPostRequest = await req.json();
 
     let account: PublicKey;
+
     try {
       account = new PublicKey(body.account);
     } catch (err) {
@@ -99,10 +104,16 @@ export const POST = async (req: Request) => {
     }
 
     const data: any = body.data;
+    console.log(data);
 
     const fromPubkey = new PublicKey(account);
     const toPubkey = new PublicKey(recipient);
-    const mint_address = new PublicKey(mint);
+
+    if (!mint) {
+      mint = data.mint;
+    }
+
+    const mint_address = new PublicKey(mint!);
 
     const connection: Rpc = createRpc(RPC_ENDPOINT, RPC_ENDPOINT, RPC_ENDPOINT);
 

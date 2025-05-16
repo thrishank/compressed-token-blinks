@@ -48,7 +48,7 @@ export const GET = async (req: Request) => {
             {
               name: "recipient",
               label: "minted token recipient",
-              type: "url",
+              type: "text",
               required: true,
             },
           ],
