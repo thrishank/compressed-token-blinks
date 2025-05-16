@@ -6,6 +6,7 @@ import {
 } from "@solana/actions";
 
 import {
+  ComputeBudgetProgram,
   PublicKey,
   TransactionMessage,
   VersionedTransaction,
@@ -68,7 +69,7 @@ export const GET = async (req: Request) => {
     links: {
       actions: [
         {
-          label: "Transfer the token",
+          label: "Transfer",
           href: posthref,
           type: "transaction",
           parameters,
@@ -104,7 +105,6 @@ export const POST = async (req: Request) => {
     }
 
     const data: any = body.data;
-    console.log(data);
 
     const fromPubkey = new PublicKey(account);
     const toPubkey = new PublicKey(recipient);
@@ -149,6 +149,9 @@ export const POST = async (req: Request) => {
     });
 
     transaction.instructions.push(instruction);
+    transaction.instructions.push(
+      ComputeBudgetProgram.setComputeUnitLimit({ units: 1_000_000 }),
+    );
 
     const versionedTransaction = new VersionedTransaction(
       transaction.compileToV0Message(),
