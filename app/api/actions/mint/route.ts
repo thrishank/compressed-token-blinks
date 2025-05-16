@@ -34,7 +34,7 @@ export const GET = async (req: Request) => {
     icon: `${new URL("/img.png", req.url).toString()}`,
     label: "Compressed Token",
     title: "Mint Compressed Token",
-    description: "Mint a compreseed token using this blink",
+    description: "Mint a compressed token using this blink",
     links: {
       actions: [
         {

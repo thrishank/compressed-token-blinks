@@ -38,7 +38,7 @@ export const GET = async (req: Request) => {
     label: "Compressed Token",
     title: "Create Compressed Token",
     description:
-      "Create a compreseed token using this blink. Compreseed tokens is a new primitive in Solana that allows you to create, mint and transfer a token by orders of magnitude. This takes adavatage of zkCompresion to reduce transaction costs",
+      "Create a compressed token  using this blink. ZK Compression is a new primitive on Solana that enables you to build applications at scale. This takes adavatage of zkCompresion to reduce storage costs by orders of magnitude while preserving the Solana L1's security, performance, and composability.",
     links: {
       actions: [
         {
@@ -101,7 +101,7 @@ export const POST = async (req: Request) => {
     const mint: Signer = Keypair.generate();
 
     const connection = new Connection(
-      "https://mainnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d",
+      "https://devnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d",
     );
 
     const data: any = body.data;
@@ -178,6 +178,7 @@ export const POST = async (req: Request) => {
       transaction: Buffer.from(versionedTransaction.serialize()).toString(
         "base64",
       ),
+      message: `Compressed Token Created successfully. Mint Address: ${mint.publicKey.toString()}`,
     };
 
     return Response.json(response, { status: 200, headers });

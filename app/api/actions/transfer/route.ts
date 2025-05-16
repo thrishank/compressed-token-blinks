@@ -1,5 +1,6 @@
 import {
   ActionGetResponse,
+  ActionParameter,
   ActionPostRequest,
   ActionPostResponse,
   ACTIONS_CORS_HEADERS,
@@ -32,38 +33,51 @@ export const OPTIONS = async () => {
 };
 
 export const GET = async (req: Request) => {
+  const url = new URL(req.url);
+  const mint = url.searchParams.get("mint");
+  const recipient = url.searchParams.get("recipient");
+
+  if (!recipient) {
+    return new Response(JSON.stringify({ error: "Recipient is required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // Define parameters array - only include mint parameter if not provided in URL
+  const parameters: Array<ActionParameter<any, any>> = [
+    // Only include mint parameter if it's not provided in the URL
+    ...(mint
+      ? []
+      : [
+          {
+            name: "mint",
+            label: "Token Mint Address",
+            type: "text" as const,
+            required: true,
+          },
+        ]),
+    {
+      name: "amount",
+      label: "token amount (raw)",
+      type: "number" as const,
+      required: true,
+    },
+  ];
+
   const response: ActionGetResponse = {
     type: "action",
     icon: `${new URL("/img.png", req.url).toString()}`,
     label: "Compressed Token",
     title: "Transfer Compressed Token",
-    description: "Transfer a compreseed token using this blink.",
+    description: "Transfer a compressed token using this blink.",
     links: {
       actions: [
         {
           label: "Transfer the token",
-          href: "/api/actions/transfer",
+          href: `/api/actions/transfer?recipient=${recipient}&mint=${mint}`,
           type: "transaction",
-          parameters: [
-            {
-              name: "mint",
-              label: "Token Mint Address",
-              type: "text",
-              required: true,
-            },
-            {
-              name: "amount",
-              label: "token amount (raw)",
-              type: "number",
-              required: true,
-            },
-            {
-              name: "recipient",
-              label: "minted token recipient",
-              type: "url",
-              required: true,
-            },
-          ],
+          parameters,
         },
       ],
     },
@@ -76,6 +90,10 @@ export const GET = async (req: Request) => {
 };
 
 export const POST = async (req: Request) => {
+  const url = new URL(req.url);
+  const mint = url.searchParams.get("mint")!;
+  const recipient = url.searchParams.get("recipient")!;
+
   try {
     const body: ActionPostRequest = await req.json();
 
@@ -93,8 +111,8 @@ export const POST = async (req: Request) => {
     const data: any = body.data;
 
     const fromPubkey = new PublicKey(account);
-    const toPubkey = new PublicKey(data.recipient);
-    const mint_address = new PublicKey(data.mint);
+    const toPubkey = new PublicKey(recipient);
+    const mint_address = new PublicKey(mint);
 
     const RPC_ENDPOINT =
       "https://mainnet.helius-rpc.com/?api-key=c991f045-ba1f-4d71-b872-0ef87e7f039d";
