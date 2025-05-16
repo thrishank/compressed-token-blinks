@@ -39,6 +39,13 @@ export default function Home() {
     }
   };
 
+  const generateTwitterIntentURL = (link: string) => {
+    const text = encodeURIComponent(
+      `Easily send me compressed tokens with this Blink link \n${link}`,
+    );
+    return `https://twitter.com/intent/tweet?text=${text}`;
+  };
+
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
       <h1 className="text-3xl font-bold mb-8 text-center">
@@ -51,20 +58,20 @@ export default function Home() {
           target="_blank"
           className="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-3 rounded-2xl shadow transition text-center"
         >
-          Create Token in a Blink
+          Create CToken in a Blink
         </Link>
         <Link
           href="https://x.com/3thris/status/1923262589896720496"
           target="_blank"
           className="bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-3 rounded-2xl shadow transition text-center"
         >
-          Mint Token in a Blink
+          Mint CToken in a Blink
         </Link>
       </div>
 
       <div className="w-full max-w-lg bg-neutral-900 p-6 rounded-2xl shadow">
         <h2 className="text-xl font-semibold mb-4 text-center">
-          Generate Receive Blink
+          Receive Compressed Tokens
         </h2>
         <input
           type="text"
@@ -100,6 +107,16 @@ export default function Home() {
             >
               {generatedLink}
             </a>
+            <div className="mt-4">
+              <a
+                href={generateTwitterIntentURL(generatedLink)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded-xl transition text-sm"
+              >
+                Share on Twitter
+              </a>
+            </div>
           </div>
         )}
       </div>
